@@ -4,6 +4,18 @@ Predicting the sale price of California single-family homes from 28 months of Ca
 
 The final model is XGBoost on 39 engineered features. Across five time-ordered validation folds it explains about 91% of the variance in log sale price, and its typical miss (median absolute percentage error) is 7.9%. A Streamlit app wraps the model so anyone can enter a home's size, beds, baths and lot size and get an estimate.
 
+## Best results
+
+| | XGBoost (final model) |
+|---|---|
+| Settings | `max_depth=8`, `learning_rate=0.05`, 500 trees, 39 engineered features |
+| Mean validation R² (log price) | 0.907 |
+| MdAPE (typical miss) | 7.9% |
+| MAPE | 12.5% |
+| Strongest price range | $500k to $1M, typical miss about 6% |
+
+Validation numbers come from 5 time-ordered folds. Test-set numbers are left out until the final refit excludes April 2026 (see [Known limitations](#known-limitations)).
+
 ## Results at a glance
 
 The baseline uses 15 raw MLS columns. Every model from the decision tree onward uses the engineered features described in [Feature engineering](#feature-engineering-04), so the jump from 0.34 to 0.86 reflects both the new features and the switch to a nonlinear model.
