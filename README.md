@@ -6,14 +6,16 @@ The final model is XGBoost on 39 engineered features. Across five time-ordered v
 
 ## Results at a glance
 
-| Model | Mean validation R² (log price) | Notes |
-|---|---|---|
-| Linear regression (baseline) | 0.34 | 15 raw features, no feature engineering |
-| Decision tree, `max_depth=10` | 0.86 | Deeper trees overfit |
-| Generalized additive model (pyGAM) | 0.88 (test) | Interpretable; scored on April 2026 holdout, not CV |
-| Random forest, `max_depth=30` | 0.897 | |
-| Random forest + XGBoost on its residuals | 0.906 | No gain over XGBoost alone |
-| **XGBoost**, `max_depth=8`, `lr=0.05`, 500 trees | **0.907** | **Final model.** Best on all 5 folds |
+The baseline uses 15 raw MLS columns. Every model from the decision tree onward uses the engineered features described in [Feature engineering](#feature-engineering-04), so the jump from 0.34 to 0.86 reflects both the new features and the switch to a nonlinear model.
+
+| Model | Features | Mean validation R² (log price) | Notes |
+|---|---|---|---|
+| Linear regression (baseline) | 15 raw | 0.34 | No feature engineering |
+| Decision tree, `max_depth=10` | 39 engineered | 0.86 | Deeper trees overfit |
+| Generalized additive model (pyGAM) | 34 engineered | 0.88 (test) | Overlapping columns removed; scored on April 2026 holdout, not CV |
+| Random forest, `max_depth=30` | 39 engineered | 0.897 | |
+| Random forest + XGBoost on its residuals | 39 engineered | 0.906 | No gain over XGBoost alone |
+| **XGBoost**, `max_depth=8`, `lr=0.05`, 500 trees | 39 engineered | **0.907** | **Final model.** Best on all 5 folds |
 
 Dollar-scale accuracy, 5 validation folds pooled:
 
@@ -83,6 +85,8 @@ Dollar-scale accuracy, 5 validation folds pooled:
 
 ## Feature engineering (`04`)
 
+I built these features in `04`, and every model from the decision tree onward is trained on them (39 columns in total, including the cleaned raw columns). The GAM uses 34 of them after dropping columns that duplicate each other.
+
 | Feature | How it's built |
 |---|---|
 | `PropertyAge`, `log_PropertyAge` | 2026 minus year built |
@@ -99,7 +103,9 @@ Neighborhood and comp features only look backward in time, so a home's own sale 
 
 ## Models tested
 
-**Linear regression (`03`).** R² 0.34. Only 1.6% of predictions landed within $10,000 of the sale price, which set the bar for moving to nonlinear models.
+The baseline runs on raw columns only. All other models use the engineered feature set.
+
+**Linear regression (`03`).** Raw columns only, no engineered features. R² 0.34. Only 1.6% of predictions landed within $10,000 of the sale price, which set the bar for moving to nonlinear models.
 
 **Decision tree and random forest (`04`).** Tuned `max_depth` across all 5 folds. The single tree peaked at depth 10 (R² 0.86) and got worse deeper. The forest (`max_samples=0.2`, `max_features=0.5`) kept improving to depth 30 (R² 0.897) because averaging many decorrelated trees cancels much of their variance.
 
