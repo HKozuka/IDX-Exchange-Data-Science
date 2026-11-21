@@ -2,7 +2,7 @@
 
 Predicting the sale price of California single-family homes from 28 months of California Regional MLS (CRMLS) closed sales. Built during the IDX Exchange Data Science Internship.
 
-The final model is XGBoost on 39 engineered features. Across five time-ordered validation folds it explains about 91% of the variance in log sale price, and its typical miss (median absolute percentage error) is 7.9%. A Streamlit app wraps the model so anyone can enter a home's size, beds, baths and lot size and get an estimate.
+The final model is XGBoost on 39 engineered features. Across five time-ordered validation folds it explains about 91% of the variance in log sale price, and its typical miss (median absolute percentage error) is 7.9%. A [Streamlit app](https://home-price-estimator.streamlit.app) wraps the model so anyone can enter a home's size, beds, baths and lot size and get an estimate.
 
 ## Best results
 
@@ -194,7 +194,9 @@ Expect `04` to take about 20 minutes (comps and random forest tuning) and the GA
 
 ## Launching the app
 
-`07_streamlit_app.ipynb` writes three files to `streamlit_app/` in your Drive folder:
+**Live app:** https://home-price-estimator.streamlit.app
+
+`07_streamlit_app.ipynb` writes three files to the committed [`streamlit_app/`](streamlit_app/) folder:
 
 - `xgb_price_bundle.joblib`: the trained model, feature order, medians and input ranges
 - `app.py`: the Streamlit app
@@ -202,17 +204,16 @@ Expect `04` to take about 20 minutes (comps and random forest tuning) and the GA
 
 **Run it locally**
 
-1. Download the `streamlit_app/` folder from Drive.
-2. Install dependencies. The XGBoost version is pinned to match the one that saved the model:
+1. Install dependencies. The XGBoost version is pinned to match the one that saved the model:
    ```bash
    cd streamlit_app
    pip install -r requirements.txt
    ```
-3. Start the app:
+2. Start the app:
    ```bash
    streamlit run app.py
    ```
-4. Open http://localhost:8501, enter living area, lot size, bedrooms and bathrooms, and click **Predict price**.
+3. Open http://localhost:8501, enter living area, lot size, bedrooms and bathrooms, and click **Predict price**.
 
 The app warns when an input falls outside the range of 98% of training homes (living area 740 to 5,566 sq ft, lot size 1,800 to 241,322 sq ft, 2 to 6 beds, 1 to 6 baths).
 
